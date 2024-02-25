@@ -3,7 +3,7 @@ import { Input, Button } from '@nextui-org/react';
 import { title, subtitle } from '@/components/primitives';
 import { Checkbox } from '@nextui-org/react';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@nextui-org/react';
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, ReactEventHandler } from 'react';
 import { Card } from '@nextui-org/react';
 
 interface Option {
@@ -28,9 +28,9 @@ const CreateQuiz = () => {
     setQuestions(newQuestions);
   };
 
-  const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>, index: number) => {
+  const handleCheckboxChange = (value: boolean, index: number) => {
     const newQuestions = [...questions];
-    newQuestions[index].isRequired = event.target.checked;
+    newQuestions[index].isRequired = value;
     setQuestions(newQuestions);
   };
 
@@ -40,27 +40,39 @@ const CreateQuiz = () => {
     setQuestions(newQuestions);
   };
 
-const handleCorrectAnswerChange = (value: string, index: number) => {
+  const handleQuizTitleChange = (value: string, index: number) => {
+    const newQuestions = [...questions];
+    newQuestions[index].quizTitle = value;
+    setQuestions(newQuestions);
+  };
+
+  const handleQuestionChange = (value: string, index: number) => {
+    const newQuestions = [...questions];
+    newQuestions[index].question = value;
+    setQuestions(newQuestions);
+  };
+
+  const handleCorrectAnswerChange = (value: string, index: number) => {
     const newQuestions = [...questions];
     newQuestions[index].correctAnswer = value;
     setQuestions(newQuestions);
-};
+  };
 
-const handleAddQuestion = () => {
+  const handleAddQuestion = () => {
     setQuestions([...questions, { selectedOption: 'Question Type', options: { A: '', B: '', C: '', D: '' }, isRequired: false, quizTitle: '', question: '', correctAnswer: '' }]);
-};
+  };
 
-const handleSubmit = () => {
+  const handleSubmit = () => {
     console.log(questions);
-};
+  };
 
   return (
     <DefaultLayout>
       <h1 className={title({ color: 'blue' })}>Create Quiz</h1>
       {questions.map((question, index) => (
-        <Card key={index} className="flex items-center justify-center flex-col w-full mt-6 p-8">
-          <Input isRequired type="email" label="Quiz Title" variant="bordered" placeholder="Enter Quiz Title" className="w-full m-3 mb-1" value={question.quizTitle} onChange={(e) => handleOptionChange('quizTitle', e.target.value, index)} />
-          <Input isRequired type="email" label="Question" variant="bordered" placeholder="Enter Question" className="w-full m-3 mb-1" value={question.question} onChange={(e) => handleOptionChange('question', e.target.value, index)} />
+        <Card key={index} className="flex items-center justify-center flex-col w-[30%] mt-6 p-8">
+          <Input isRequired type="text" label="Quiz Title" variant="bordered" placeholder="Enter Quiz Title" className="w-full m-3 mb-1" value={question.quizTitle} onChange={(e) => handleQuizTitleChange(e.target.value, index)} />
+          <Input isRequired type="text" label="Question" variant="bordered" placeholder="Enter Question" className="w-full m-3 mb-1" value={question.question} onChange={(e) => handleQuestionChange(e.target.value, index)} />
           <Dropdown>
             <DropdownTrigger>
               <Button variant="bordered" className="max-w-lg m-3 mb-1">
@@ -79,8 +91,8 @@ const handleSubmit = () => {
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
-          {question.selectedOption === 'Numerical' && <Input isRequired type="number" label="Answer" variant="bordered" placeholder="Enter Correct Numerical Answer" className="w-full m-3 mb-1" />}
-          {question.selectedOption === 'Text' && <Input isRequired type="text" label="Answer" variant="bordered" placeholder="Enter Correct Textual Answer" className="w-full m-3 mb-1" />}
+          {question.selectedOption === 'Numerical' && <Input isRequired type="number" label="Answer" variant="bordered" placeholder="Enter Correct Numerical Answer" value={question.correctAnswer} className="w-full m-3 mb-1" onChange={(e) => handleCorrectAnswerChange(e.target.value, index)} />}
+          {question.selectedOption === 'Text' && <Input isRequired type="text" label="Answer" variant="bordered" placeholder="Enter Correct Textual Answer" className="w-full m-3 mb-1" value={question.correctAnswer} onChange={(e) => handleCorrectAnswerChange(e.target.value, index)} />}
           {question.selectedOption === 'Multiple Choice' && (
             <div className="flex flex-col justify-center items-center w-full mt-2">
               <Input className="w-full mb-2" isRequired label="Select" variant="bordered" value={question.options.A} onChange={(e) => handleOptionChange('A', e.target.value, index)} placeholder="Option A" />
@@ -110,15 +122,16 @@ const handleSubmit = () => {
               </Dropdown>
             </div>
           )}
-          <Checkbox className="mt-3" defaultSelected onChange={(e) => handleCheckboxChange(e, index)}>
-            Mark as Required
-          </Checkbox>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <input type="checkbox" id="required" className="mt-3" onChange={(e) => handleCheckboxChange(e.target.checked, index)}/>
+          <label htmlFor="required" className='ml-2 mt-3'>Mark as Required</label>
+          </div>
         </Card>
       ))}
-      <Button className="w-96 m-7 mt-5" color="primary" variant="solid" onClick={handleAddQuestion}>
+      <Button className="w-[30%] m-7 mt-5" color="primary" variant="solid" onClick={handleAddQuestion}>
         Add Question
       </Button>
-      <Button className="w-96 m-7 mt-3" color="primary" variant="solid" onClick={handleSubmit}>
+      <Button className="w-[30%] m-7 mt-3" color="primary" variant="solid" onClick={handleSubmit}>
         Submit Quiz
       </Button>
     </DefaultLayout>
