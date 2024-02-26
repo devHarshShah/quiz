@@ -1,7 +1,6 @@
 import DefaultLayout from '@/layouts/default';
 import { Input, Button } from '@nextui-org/react';
-import { title, subtitle } from '@/components/primitives';
-import { Checkbox } from '@nextui-org/react';
+import { title } from '@/components/primitives';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@nextui-org/react';
 import React, { useState, ChangeEvent, ReactEventHandler } from 'react';
 import { Card } from '@nextui-org/react';
@@ -14,18 +13,22 @@ interface Question {
   selectedOption: string;
   options: Option;
   isRequired: boolean;
-  quizTitle: string;
   question: string;
   correctAnswer: string;
 }
 
 const CreateQuiz = () => {
-  const [questions, setQuestions] = useState<Question[]>([{ selectedOption: 'Question Type', options: { A: '', B: '', C: '', D: '' }, isRequired: false, quizTitle: '', question: '', correctAnswer: '' }]);
+  const [questions, setQuestions] = useState<Question[]>([{ selectedOption: 'Question Type', options: { A: '', B: '', C: '', D: '' }, isRequired: false, question: '', correctAnswer: '' }]);
+  const [quizTitle, setQuizTitle] = useState('');
 
   const handleSelect = (option: string, index: number) => {
     const newQuestions = [...questions];
     newQuestions[index].selectedOption = option;
     setQuestions(newQuestions);
+  };
+
+  const handleQuizTitleChange = (value: string) => {
+    setQuizTitle(value);
   };
 
   const handleCheckboxChange = (value: boolean, index: number) => {
@@ -37,12 +40,6 @@ const CreateQuiz = () => {
   const handleOptionChange = (optionKey: string, value: string, index: number) => {
     const newQuestions = [...questions];
     newQuestions[index].options[optionKey] = value;
-    setQuestions(newQuestions);
-  };
-
-  const handleQuizTitleChange = (value: string, index: number) => {
-    const newQuestions = [...questions];
-    newQuestions[index].quizTitle = value;
     setQuestions(newQuestions);
   };
 
@@ -59,20 +56,22 @@ const CreateQuiz = () => {
   };
 
   const handleAddQuestion = () => {
-    setQuestions([...questions, { selectedOption: 'Question Type', options: { A: '', B: '', C: '', D: '' }, isRequired: false, quizTitle: '', question: '', correctAnswer: '' }]);
+    setQuestions([...questions, { selectedOption: 'Question Type', options: { A: '', B: '', C: '', D: '' }, isRequired: false, question: '', correctAnswer: '' }]);
   };
 
   const handleSubmit = () => {
-    console.log(questions);
+    console.log(questions, quizTitle);
+    setQuestions([{ selectedOption: 'Question Type', options: { A: '', B: '', C: '', D: '' }, isRequired: false, question: '', correctAnswer: '' }]);
+    setQuizTitle('');
   };
 
   return (
     <DefaultLayout>
       <h1 className={title({ color: 'blue' })}>Create Quiz</h1>
+      <Input isRequired type="text" label="Quiz Title" variant="bordered" placeholder="Enter Quiz Title" className="w-[30%] mt-6 m-3 mb-1" value={quizTitle} onChange={(e) => handleQuizTitleChange(e.target.value)} />
       {questions.map((question, index) => (
-        <Card key={index} className="flex items-center justify-center flex-col w-[30%] mt-6 p-8">
-          <Input isRequired type="text" label="Quiz Title" variant="bordered" placeholder="Enter Quiz Title" className="w-full m-3 mb-1" value={question.quizTitle} onChange={(e) => handleQuizTitleChange(e.target.value, index)} />
-          <Input isRequired type="text" label="Question" variant="bordered" placeholder="Enter Question" className="w-full m-3 mb-1" value={question.question} onChange={(e) => handleQuestionChange(e.target.value, index)} />
+        <Card key={index} className="flex items-center justify-center flex-col w-[30%] p-8">
+        <Input isRequired type="text" label="Question" variant="bordered" placeholder="Enter Question" className="w-full m-3 mb-1" value={question.question} onChange={(e) => handleQuestionChange(e.target.value, index)} />
           <Dropdown>
             <DropdownTrigger>
               <Button variant="bordered" className="max-w-lg m-3 mb-1">
