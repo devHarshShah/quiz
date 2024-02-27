@@ -2,8 +2,9 @@ import DefaultLayout from '@/layouts/default';
 import { Input, Button } from '@nextui-org/react';
 import { title } from '@/components/primitives';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@nextui-org/react';
-import React, { useState, ChangeEvent, ReactEventHandler } from 'react';
+import React, { useState } from 'react';
 import { Card } from '@nextui-org/react';
+import axios from 'axios';
 
 interface Option {
   [key: string]: string;
@@ -60,9 +61,21 @@ const CreateQuiz = () => {
   };
 
   const handleSubmit = () => {
-    console.log(questions, quizTitle);
-    setQuestions([{ selectedOption: 'Question Type', options: { A: '', B: '', C: '', D: '' }, isRequired: false, question: '', correctAnswer: '' }]);
-    setQuizTitle('');
+    const quizData = {
+      quizTitle: quizTitle,
+      questions: questions,
+      token: localStorage.getItem('token')
+    };
+  
+    axios.post('/api/createQuiz', quizData)
+      .then(response => {
+        console.log(response.data);
+        setQuestions([{ selectedOption: 'Question Type', options: { A: '', B: '', C: '', D: '' }, isRequired: false, question: '', correctAnswer: '' }]);
+        setQuizTitle('');
+      })
+      .catch(error => {
+        console.error(error);
+      });
   };
 
   return (

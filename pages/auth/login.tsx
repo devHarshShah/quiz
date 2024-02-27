@@ -43,12 +43,13 @@ const Login = () => {
   const onclick = async () => {
     setIsLoading(true);
     axios
-      .post('/api/signup', {
+      .post('/api/login', {
         email: email,
         password: password,
       })
       .then(function (response: any) {
         console.log(response);
+        localStorage.setItem('token', response.data.token)
         setEmail('');
         setPassword('');
       })

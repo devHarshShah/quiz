@@ -57,7 +57,6 @@ export default async function handler(
         }
 
         const token = jwt.sign({ id: user._id }, secret);
-
         res.status(200).json({ token, message: 'Logged in successfully' });
     } catch (error) {
         console.error(error);
