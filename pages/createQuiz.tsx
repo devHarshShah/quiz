@@ -83,7 +83,7 @@ const CreateQuiz = () => {
       <h1 className={title({ color: 'blue' })}>Create Quiz</h1>
       <Input isRequired type="text" label="Quiz Title" variant="bordered" placeholder="Enter Quiz Title" className="w-[30%] mt-6 m-3 mb-1" value={quizTitle} onChange={(e) => handleQuizTitleChange(e.target.value)} />
       {questions.map((question, index) => (
-        <Card key={index} className="flex items-center justify-center flex-col w-[30%] p-8">
+        <Card key={index} className="flex items-center justify-center flex-col w-[30%] p-8 m-4">
         <Input isRequired type="text" label="Question" variant="bordered" placeholder="Enter Question" className="w-full m-3 mb-1" value={question.question} onChange={(e) => handleQuestionChange(e.target.value, index)} />
           <Dropdown>
             <DropdownTrigger>

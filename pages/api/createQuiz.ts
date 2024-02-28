@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { MongoClient, ServerApiVersion } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
+let random = require('random-string-alphanumeric-generator');
 require('dotenv').config();
 
 interface Option {
@@ -66,20 +68,24 @@ export default async function handler(
 
         const collection = client.db('quizDB').collection('quizzes');
         const usersCollection = client.db('quizDB').collection('users');
+        const code = random.randomAlphanumeric(10, "lowercase")
 
         const quiz = {
             title: quizTitle,
             questions,
             createdBy: userId,
+            uniqueCode: code
         };
 
         const result = await collection.insertOne(quiz);
 
         if (result.insertedId) {
-            await usersCollection.updateOne(
-                { _id: userId },
-                { $push: { createdQuizzes: result.insertedId } }
+            const updateResult = await usersCollection.updateOne(
+                { _id: new ObjectId(userId) },
+                { $addToSet: { createdQuizzes: result.insertedId } }
             );
+        
+            console.log(updateResult);
         }
 
         res.status(200).json({ message: 'Quiz created successfully' });
