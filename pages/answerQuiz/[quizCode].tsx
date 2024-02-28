@@ -44,7 +44,7 @@ function QuizComponent() {
       .catch((error) => console.error('Error:', error));
   }, [quizCode]);
 
-  if (!quiz && !quizStatus) {
+  if (!quiz) {
     return <div>Loading...</div>;
   }
 
