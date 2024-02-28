@@ -45,9 +45,10 @@ export default async function handler(
         return;
     }
 
-    let userId;
+    let userId ;
     try {
-        const decoded = jwt.verify(token, secret);
+        const decoded = jwt.verify(token, secret) as jwt.JwtPayload;
+        console.log(decoded);
         userId = decoded.id;
     } catch (err) {
         res.status(403).json({ message: 'Invalid token' });
