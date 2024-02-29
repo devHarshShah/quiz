@@ -85,8 +85,6 @@ export default async function handler(
                 { _id: new ObjectId(userId) },
                 { $addToSet: { createdQuizzes: result.insertedId } }
             );
-        
-            console.log(updateResult);
         }
 
         res.status(200).json({ message: 'Quiz created successfully' });

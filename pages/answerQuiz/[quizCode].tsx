@@ -63,6 +63,7 @@ function QuizComponent() {
         setQuiz(null);
         setQuizStatus(true);
         setScore(response.data.score)
+        router.push(`/result?score=${response.data.score}`);
       })
       .catch((error) => {
         console.error(error);
