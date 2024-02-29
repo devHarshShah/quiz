@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { MongoClient, ServerApiVersion } from 'mongodb';
+import { MongoClient, ServerApiVersion, InsertOneResult, Document } from 'mongodb';
 import { ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
 let random = require('random-string-alphanumeric-generator');
@@ -21,6 +21,8 @@ type Data = {
     quizTitle: string;
     questions: Question[];
     message: string;
+    result: InsertOneResult<Document>;
+    quiz: any; // Add this line
 }
 
 interface ErrorResponse {
@@ -87,7 +89,7 @@ export default async function handler(
             );
         }
 
-        res.status(200).json({ message: 'Quiz created successfully' });
+        res.status(200).json({ quiz:quiz, message: 'Quiz created successfully' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });

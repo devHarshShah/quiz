@@ -2,6 +2,7 @@ import DefaultLayout from '@/layouts/default';
 import { Input, Button } from '@nextui-org/react';
 import { title } from '@/components/primitives';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@nextui-org/react';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { Card } from '@nextui-org/react';
 import axios from 'axios';
@@ -21,6 +22,7 @@ interface Question {
 const CreateQuiz = () => {
   const [questions, setQuestions] = useState<Question[]>([{ selectedOption: 'Question Type', options: { A: '', B: '', C: '', D: '' }, isRequired: false, question: '', correctAnswer: '' }]);
   const [quizTitle, setQuizTitle] = useState('');
+  const router = useRouter();
 
   const handleSelect = (option: string, index: number) => {
     const newQuestions = [...questions];
@@ -72,6 +74,7 @@ const CreateQuiz = () => {
         console.log(response.data);
         setQuestions([{ selectedOption: 'Question Type', options: { A: '', B: '', C: '', D: '' }, isRequired: false, question: '', correctAnswer: '' }]);
         setQuizTitle('');
+        router.push(`/quizLink?uniqueCode=${response.data.quiz.uniqueCode}`);
       })
       .catch(error => {
         console.error(error);
